@@ -2,6 +2,9 @@ package Presentation;
 
 import Model.Client;
 import Model.Orders;
+import Model.Product;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +14,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +24,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
+/**
+ * interfata pentru order
+ */
 public class OrderView {
     private OrderController controller;
     private ProductController controllerProd;
@@ -37,6 +45,10 @@ public class OrderView {
         title.setFont(Font.font("TIMES NEW ROMAN", FontWeight.EXTRA_BOLD, 45));
         title.setTextFill(Color.WHITE);
         title.autosize();
+
+        Label eroare = new Label("");
+        eroare.setTextFill(Color.DARKRED);
+        eroare.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 16));
 
         HBox top=new HBox();
         top.getChildren().add( title);
@@ -69,7 +81,7 @@ public class OrderView {
         clientss.setFont(Font.font("Arial", FontWeight.BOLD, 15));
         clientss.setTextFill(Color.WHITE);
          lis1 = FXCollections.observableArrayList();
-        //aiciccc
+
         lis1.clear();
         controllerClient=new ClientController(lis1,"add");
         lis1=controllerClient.viewList(2);
@@ -101,7 +113,7 @@ public class OrderView {
 
         HBox cantitate = new HBox();
         cantitate.setAlignment(Pos.TOP_LEFT);
-        Label cantitatetxt = new Label("Stock:");
+        Label cantitatetxt = new Label("Cantitate:");
         cantitatetxt.setFont(Font.font("Arial", FontWeight.BOLD, 15));
         cantitatetxt.setTextFill(Color.WHITE);
         TextField cantitatee = new TextField();
@@ -117,31 +129,41 @@ public class OrderView {
         cantitate.setPadding(new Insets(0,0,0,30));
 
         BackgroundImage myBI = new BackgroundImage(
-                new Image("https://wallpaperboat.com/wp-content/uploads/2020/04/green-aesthetic-wallpaper-free.jpg", 1000, 700,
+                new Image("https://wallpaperboat.com/wp-content/uploads/2020/04/green-aesthetic-wallpaper-free.jpg", 1070, 700,
                         false, true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
 
         stanga.setSpacing(15);
-        stanga.getChildren().addAll(id,clnt, prod,cantitate);
+        stanga.getChildren().addAll(id,clnt, prod,cantitate, eroare);
 
-        //dreapta
-        TextField search = new TextField();
-        search.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 15));
-        search.setStyle("-fx-background-color: white; -fx-background-radius: 15px; ");
-        search.setBackground(
-                new Background(new BackgroundFill(Color.web("#2a2222", 1.0), CornerRadii.EMPTY, Insets.EMPTY)));
-        search.setPrefSize(500, 40);
-        Image srcc = new Image(
-                "https://www.clipartmax.com/png/full/473-4732129_computer-icons-google-search-clip-art-transprent-%E2%93%92-transparent-background-magnifying-glass.png",
-                20, 20, false, true);
-        ImageView im = new ImageView(srcc);
+        /**dreapta
+         *
+         */
+        Orders oo=new Orders();
+        ExtrageFields.retrieveProperties(oo);
+        String colName[]=ExtrageFields.extractFields.toArray(new String[0]);
+        ExtrageFields.extractFields.clear();
+        TableView tableView = new TableView();
+        TableColumn<Orders, String> column1 =new TableColumn<>(colName[1]);
+        column1.setCellValueFactory( new PropertyValueFactory<>("numeclient"));
+        TableColumn<Orders, String> column2 =new TableColumn<>(colName[2]);
+        column1.setCellValueFactory( new PropertyValueFactory<>("numeprodus"));
+        TableColumn<Orders, String> column3 =
+                new TableColumn<>(colName[3]);
+        column2.setCellValueFactory( new PropertyValueFactory<>("cantitate"));
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
+        tableView.getColumns().add(column3);
 
-        HBox src = new HBox();
-        src.setSpacing(-40);
-        src.setAlignment(Pos.CENTER_LEFT);
-        src.getChildren().addAll(search, im);
-        src.setPadding(new Insets(0, 0, -10, 0));
+        column1.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
+        column2.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
+        column3.prefWidthProperty().bind(tableView.widthProperty().multiply(0.4));
+
+        column1.setResizable(false);
+        column2.setResizable(false);
+        column3.setResizable(false);
+        tableView.setPrefSize(400,0);
 
 
         VBox addOrder=new VBox();
@@ -175,8 +197,11 @@ public class OrderView {
         butoane.getChildren().addAll(add, scoate, save,refr);
         butoane.setSpacing(10);
 
-        addOrder.getChildren().addAll(src,lv, butoane);
-        addOrder.setSpacing(15);
+        VBox tabel=new VBox();
+        tabel.getChildren().addAll(tableView,lv);
+        tabel.setSpacing(-20);
+
+        addOrder.getChildren().addAll(tabel, butoane);
         addOrder.setSpacing(20);
         addOrder.setAlignment(Pos.CENTER);
 
@@ -195,13 +220,14 @@ public class OrderView {
         backh.getChildren().add(back);
         backh.setAlignment(Pos.BOTTOM_RIGHT);
         backh.setPadding(new Insets(0,20,20,0));
-        // back.setAlignment(Pos.BOTTOM_RIGHT);
 
         tot.getChildren().addAll(top,stdr,backh);
         tot.setBackground(new Background(myBI));
         tot.setSpacing(20);
 
-        //addListener
+        /**addListener
+         *
+         */
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -209,18 +235,64 @@ public class OrderView {
             }
         });
 
-        //butoane
+        lv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+                // TODO Auto-generated method stub
+                int p = lv.getSelectionModel().getSelectedIndex();
+                if (p >= 0) {
+                    comanda= (Orders) itemi.get(p);
+                    idd.setText(String.valueOf(comanda.getIdorder()));
+                   // filtruProd.getSelectionModel().getSelectedIndex(9);
+                    cantitatee.setText(String.valueOf(comanda.getCantitate()));
+                }
+            }
+        });
+
+        /**butoane
+         *
+         */
         add.setOnAction(new EventHandler() {
 
             @Override
             public void handle(Event arg0) {
                 // TODO Auto-generated method stub
                 int idul= Integer.parseInt(idd.getText());
-                String produs= String.valueOf(filtruProd.getItems().get(0));
-                String client= String.valueOf(filtruClnt.getItems().get(0));
+                String produs= String.valueOf(filtruProd.getValue());
+                String client= String.valueOf(filtruClnt.getValue());
+                int stk=Integer.parseInt(cantitatee.getText());
                 Orders o=new Orders(idul,produs,client,Integer.parseInt(cantitatee.getText()));
+                //getIdProdus dupa numeProdus
+
                 controller=new OrderController(itemi,  "add");
-                controller.OperationOrder(o);
+                try {
+                    Product p=controller.productOrder(String.valueOf(filtruProd.getValue()));
+                    stk=p.getCantitate()-stk;
+                    if(stk>=0)
+                    {
+                        p.setCantitate(stk);
+                        controller.OperationOrder(o);
+                        ProductController cp;
+                        System.out.println(p.getCantitate()+" "+stk);
+                        if(stk==0) {
+                            cp = new ProductController(itemi, "delete");
+                            System.out.println("se sterge");
+                        }
+                        else  cp=new ProductController(itemi,  "update");
+                        cp.OperationProduct(p);
+                        eroare.setText("");
+                    }
+
+                    else{
+                        eroare.setText("        Stock insuficient!");
+                    }
+
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
 
             }
         });
@@ -230,11 +302,50 @@ public class OrderView {
             @Override
             public void handle(Event arg0) {
                 // TODO Auto-generated method stub
-                int idul= Integer.parseInt(idd.getText());
-                Client c=new Client(idul,nume.getText(), adresaa.getText());
-                controller=new ClientController(itemi,  "delete");
-                controller.OperationClient(clientul);
+                controller=new OrderController(itemi,  "delete");
+                controller.OperationOrder(comanda);
+                eroare.setText("");
+            }
 
+        });
+        save.setOnAction(new EventHandler() {
+
+            @Override
+            public void handle(Event arg0) {
+                // TODO Auto-generated method stub
+                int idul= Integer.parseInt(idd.getText());
+                String produs= String.valueOf(filtruProd.getValue());
+                String client= String.valueOf(filtruClnt.getValue());
+                Orders o=new Orders(idul,produs,client,Integer.parseInt(cantitatee.getText()));
+                controller=new OrderController(itemi,  "update");
+                int stk=Integer.parseInt(cantitatee.getText());
+
+                try {
+                    Product p=controller.productOrder(String.valueOf(filtruProd.getValue()));
+                    stk=p.getCantitate()-stk;
+                    if(stk>=0)
+                    {
+                        p.setCantitate(stk);
+                        controller.OperationOrder(o);
+                        ProductController cp;
+                        System.out.println(p.getCantitate()+" "+stk);
+                        if(stk==0) {
+                            cp = new ProductController(itemi, "delete");
+                            System.out.println("se sterge");
+                        }
+                        else  cp=new ProductController(itemi,  "update");
+                        cp.OperationProduct(p);
+                        eroare.setText("");
+                    }
+
+                    else{
+                        eroare.setText("        Stock insuficient!");
+                    }
+
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -245,7 +356,7 @@ public class OrderView {
             }
         });
 
-        Scene scene = new Scene(tot, 1000, 700);
+        Scene scene = new Scene(tot, 1070, 700);
         refresh();
         return scene;
 
@@ -257,5 +368,6 @@ public class OrderView {
         itemi=controller.viewList();
 
         lv.setItems(itemi);
+
     }
 }

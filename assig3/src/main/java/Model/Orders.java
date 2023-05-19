@@ -1,17 +1,23 @@
 package Model;
-
+/**
+ * constructori, gettere, settere
+ * */
 public class Orders {
     private int idorders;
     private String numeclient;
     private String numeprodus;
+
+    public Orders() {
+    }
+
     private int cantitate;
 
     @Override
     public String toString() {
         return "Order " + idorders +
-                ".      CLIENT: " + numeclient +
-                "       PRODUCT: " + numeprodus+
-                "       STOCK: " + cantitate;
+                ".CLIENT: " + numeclient +
+                "               PRODUCT: " + numeprodus+
+                "                   STOCK: " + cantitate;
     }
 
     public int getIdorder() {

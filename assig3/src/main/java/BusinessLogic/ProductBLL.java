@@ -16,6 +16,11 @@ import DataAcces.ProductDAO;
 import Model.Product;
 import javafx.collections.ObservableList;
 
+/**
+ * folosit pe post de server pentru clasa Product
+ * realizeaza legatura intre ProductDao si ProductController
+ * are ca atribute o lista de produse, un ProductDAO, si un ObservableList pentru afisarea in interfata a tuturor produselor
+ */
 public class ProductBLL {
 
     private List<Validator<Product>> validators;
@@ -29,13 +34,6 @@ public class ProductBLL {
         this.list = list;
     }
 
-//    public ProductBLL() {
-//        validators = new ArrayList<Validator<Product>>();
-//        validators.add(new AdresaValidator());
-//        validators.add(new NumeValidator());
-//
-//        clientDAO = new ClientDAO();
-//    }
 
     public Product findProductById(int id) throws SQLException {
         Product st = productDAO.findById(id);
@@ -44,6 +42,9 @@ public class ProductBLL {
         }
         return st;
     }
+    /**
+     * se apeleaza pentru afisarea produselor
+     */
     public ObservableList viewProduct(int tip)
     {
         try {
@@ -54,14 +55,23 @@ public class ProductBLL {
         }
 
     }
+    /**
+     * pentru operatiile pe produse: adaugare
+     */
     public void addProduct(Product c)
     {
         productDAO.insert(c);
     }
+    /**
+     * pentru operatiile pe produse: stergere
+     */
     public void deleteProduct(Product c)
     {
         productDAO.delete(c);
     }
+    /**
+     * pentru operatiile pe produse: update
+     */
     public void updateProduct(Product c)
     {
         productDAO.update(c);

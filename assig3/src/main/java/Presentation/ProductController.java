@@ -3,7 +3,10 @@ package Presentation;
 import BusinessLogic.ProductBLL;
 import Model.Product;
 import javafx.collections.ObservableList;
-
+/**
+ * realizaeaza legatura dintre productView si ProductBLL(service)
+ *
+ */
 public class ProductController {
     private ObservableList list;
     private ProductBLL service;

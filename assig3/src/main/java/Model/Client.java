@@ -1,5 +1,9 @@
 package Model;
 
+/**
+ * constructori, gettere, settere
+ * */
+
 public class Client {
     private int id;
     private String nume;
@@ -45,7 +49,7 @@ public class Client {
     public String toString() {
         return "Client  " + id +
                 ". " + nume  +
-                "                   " + adresa;
+                "                                                            " + adresa;
     }
 
     public void setAdresa(String adresa) {

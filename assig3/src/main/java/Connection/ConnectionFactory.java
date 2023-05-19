@@ -7,8 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * folosit pentru realizarea conexiunii intre aplicatia din inteliJ si baza de date
+ */
 public class ConnectionFactory {
+    /**declararea elementelor pentru realizarea conexiunii
+    *mare grija la parola, user si numele bazei de date*/
     private static final Logger LOGGER = Logger.getLogger(ConnectionFactory.class.getName());
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DBURL = "jdbc:mysql://localhost:3306/assig3db";

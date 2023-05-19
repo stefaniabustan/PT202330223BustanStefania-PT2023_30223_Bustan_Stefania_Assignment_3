@@ -15,7 +15,11 @@ import Model.Client;
 import Presentation.ClientView;
 import javafx.collections.ObservableList;
 
-
+/**
+ * folosit pe post de server pentru clasa Client
+ * realizeaza legatura intre ClientDao si ClientController
+ * are ca atribute o lista de clienti, un clientDAO, si un ObservableList pentru afisarea in interfata a tuturor clientilor
+ */
 public class ClientBLL {
     private List<Validator<Client>> validators;
     private ClientDAO clientDAO;
@@ -27,6 +31,7 @@ public class ClientBLL {
         this.clientDAO = new ClientDAO();
         this.list = list;
     }
+
 
     public ClientBLL() {
         validators = new ArrayList<Validator<Client>>();
@@ -43,6 +48,9 @@ public class ClientBLL {
         }
         return st;
     }
+    /**
+     * se apeleaza pentru afisarea clientilor
+     */
     public ObservableList viewClient(int tip)
     {
         try {
@@ -53,14 +61,23 @@ public class ClientBLL {
         }
 
     }
+    /**
+     * pentru operatiile pe clienti: adaugare
+     */
     public void addClient(Client c)
     {
         clientDAO.insert(c);
     }
+    /**
+     * pentru operatiile pe clienti: stergere
+     */
     public void deleteClient(Client c)
     {
         clientDAO.delete(c);
     }
+    /**
+     * pentru operatiile pe clienti: update
+     */
     public void updateClient(Client c)
     {
         clientDAO.update(c);

@@ -21,6 +21,11 @@ import Connection.ConnectionFactory;
  *          Research Laboratory, http://dsrl.coned.utcluj.ro/
  * @Since: Apr 03, 2017
  * @Source http://www.java-blog.com/mapping-javaobjects-database-reflection-generics
+ *
+ *  defines the common operations for accessing a table: Insert, Update, Delete,
+ * FindById, FindAll. Define the operations on the specified generic type <T> (! T can be any Java Model Class that is
+ * mapped to the Database, and has the same name as the table and the same instance variables and data types as
+ * the table fields)
  */
 public class AbstractDAO<T> {
     protected static final Logger LOGGER = Logger.getLogger(AbstractDAO.class.getName());
@@ -41,11 +46,6 @@ public class AbstractDAO<T> {
         sb.append(type.getSimpleName());
         sb.append(" WHERE " + field + " =?");
         return sb.toString();
-    }
-
-    public List<T> findAll() {
-        // TODO:
-        return null;
     }
 
     public T findById(int id) throws SQLException {
@@ -110,6 +110,10 @@ public class AbstractDAO<T> {
         return list;
     }
 
+    /**crearea sintaxei pentru inserare (de mySQL)
+     * INSERT INTO ... VALUES ...
+     * */
+
     public void insert(T t) {
         // TODO:
         Connection connection = null;
@@ -160,19 +164,17 @@ public class AbstractDAO<T> {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query.toString());
             statement.executeUpdate();
-
-           // return createObjects(resultSet).get(0);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, type.getName() + "DAO:insert " + e.getMessage());
         } finally {
-           // ConnectionFactory.close(resultSet);
             ConnectionFactory.close(statement);
             ConnectionFactory.close(connection);
         }
-
-     //   return t;
     }
 
+    /**crearea sintaxei pentru delete (de mySQL) dupa id
+     * DELETE FROM ... WHERE id/idorder/idproduct= ...
+     * */
     public void delete(T t) {
         // TODO:
         Connection connection = null;
@@ -220,18 +222,18 @@ public class AbstractDAO<T> {
             statement = connection.prepareStatement(query.toString());
             statement.executeUpdate();
 
-            // return createObjects(resultSet).get(0);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, type.getName() + "DAO:delete " + e.getMessage());
         } finally {
-            // ConnectionFactory.close(resultSet);
             ConnectionFactory.close(statement);
             ConnectionFactory.close(connection);
         }
 
-        //   return t;
-    }
 
+    }
+    /**crearea sintaxei pentru update dupa id/idprodus/idorder(de mySQL)
+     * UPDATE ... SET  ...  WHERE ...
+     * */
     public T update(T t) {
         // TODO:
         Connection connection = null;

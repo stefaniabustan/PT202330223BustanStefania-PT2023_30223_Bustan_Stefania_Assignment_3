@@ -3,12 +3,17 @@ package BusinessLogic;
 import BusinessLogic.Validators.Validator;
 import DataAcces.OrdersDAO;
 import Model.Orders;
+import Model.Product;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+/**
+ * folosit pe post de server pentru clasa Order
+ * realizeaza legatura intre OrderDao si OrderController
+ * are ca atribute o lista de comenzi, un OrderDAO, si un ObservableList pentru afisarea in interfata a tuturor comenzilor
+ */
 public class OrderBLL {
     private List<Validator<Orders>> validators;
     private OrdersDAO orderDAO;
@@ -20,18 +25,11 @@ public class OrderBLL {
         this.orderDAO = new OrdersDAO();
         this.list = list;
     }
+
     public OrderBLL( ) {
 
         this.orderDAO = new OrdersDAO();
     }
-
-//    public OrderBLL() {
-//        validators = new ArrayList<Validator<Order>>();
-//        validators.add(new AdresaValidator());
-//        validators.add(new NumeValidator());
-//
-//        OrderDAO = new OrderDAO();
-//    }
 
     public Orders findOrderById(int id) throws SQLException {
         Orders st = orderDAO.findById(id);
@@ -40,6 +38,9 @@ public class OrderBLL {
         }
         return st;
     }
+    /**
+     * se apeleaza pentru afisarea comenzilor
+     */
     public ObservableList viewOrders()
     {
         try {
@@ -50,16 +51,30 @@ public class OrderBLL {
         }
 
     }
+
+    /**
+     * pentru operatiile pe comenzi: adaugare
+     */
     public void addOrders(Orders c)
     {
         orderDAO.insert(c);
     }
+    /**
+     * pentru operatiile pe comenzi: stergere
+     */
     public void deleteOrders(Orders c)
     {
         orderDAO.delete(c);
     }
+    /**
+     * pentru operatiile pe comenzi: update
+     */
     public void updateOrders(Orders c)
     {
         orderDAO.update(c);
+    }
+    public Product productOrder(String name) throws SQLException {
+        Product p=orderDAO.getProductOrder(name);
+        return  p;
     }
 }

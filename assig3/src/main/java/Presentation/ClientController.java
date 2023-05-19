@@ -4,6 +4,10 @@ import BusinessLogic.ClientBLL;
 import Model.Client;
 import javafx.collections.ObservableList;
 
+/**
+ * realizaeaza legatura dintre clientView si ClientBLL(service)
+ *
+ */
 public class ClientController {
     private  ObservableList list;
     private ClientBLL service;

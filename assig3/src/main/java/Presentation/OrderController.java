@@ -2,8 +2,14 @@ package Presentation;
 
 import BusinessLogic.OrderBLL;
 import Model.Orders;
+import Model.Product;
 import javafx.collections.ObservableList;
 
+import java.sql.SQLException;
+/**
+ * realizaeaza legatura dintre orderView si OrdersBLL(service)
+ *
+ */
 public class OrderController {
     private ObservableList list;
     private OrderBLL service;
@@ -35,5 +41,8 @@ public class OrderController {
                 this.service.updateOrders(comanda);
                 // code block
         }
+    }
+    public Product productOrder(String name) throws SQLException {
+        return this.service.productOrder(name);
     }
 }

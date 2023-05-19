@@ -14,6 +14,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -25,11 +29,15 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.scene.input.*;
 
+import java.awt.*;
 import java.io.FileOutputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * interfata pentru client
+ */
 public class ClientView  {
     private ClientController controller;
     private   ObservableList itemi;
@@ -91,7 +99,7 @@ public class ClientView  {
 
         HBox adresa = new HBox();
         adresa.setAlignment(Pos.TOP_LEFT);
-        Label adresatxt = new Label("Mail:");
+        Label adresatxt = new Label("Adresa:");
         adresatxt.setFont(Font.font("Arial", FontWeight.BOLD, 15));
         adresatxt.setTextFill(Color.WHITE);
         TextField adresaa = new TextField();
@@ -107,7 +115,7 @@ public class ClientView  {
         adresa.setPadding(new Insets(0,0,0,30));
 
         BackgroundImage myBI = new BackgroundImage(
-                new Image("https://wallpaperboat.com/wp-content/uploads/2020/04/green-aesthetic-wallpaper-free.jpg", 1000, 700,
+                new Image("https://wallpaperboat.com/wp-content/uploads/2020/04/green-aesthetic-wallpaper-free.jpg", 1070, 700,
                         false, true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
@@ -115,24 +123,28 @@ public class ClientView  {
         stanga.setSpacing(15);
         stanga.getChildren().addAll(id,name, adresa);
 
-        //dreapta
-        TextField search = new TextField();
-        search.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 15));
-        search.setStyle("-fx-background-color: white; -fx-background-radius: 15px; ");
-        search.setBackground(
-                new Background(new BackgroundFill(Color.web("#2a2222", 1.0), CornerRadii.EMPTY, Insets.EMPTY)));
-        search.setPrefSize(500, 40);
-        Image srcc = new Image(
-                "https://www.clipartmax.com/png/full/473-4732129_computer-icons-google-search-clip-art-transprent-%E2%93%92-transparent-background-magnifying-glass.png",
-                20, 20, false, true);
-        ImageView im = new ImageView(srcc);
+        /**dreapta
+         *
+         */
 
-        HBox src = new HBox();
-        src.setSpacing(-40);
-        src.setAlignment(Pos.CENTER_LEFT);
-        src.getChildren().addAll(search, im);
-        src.setPadding(new Insets(0, 0, -10, 0));
+        ExtrageFields.retrieveProperties(clientul);
+        String colName[]=ExtrageFields.extractFields.toArray(new String[0]);
+        ExtrageFields.extractFields.clear();
+        TableView tableView = new TableView();
+        TableColumn<Client, String> column1 =new TableColumn<>(colName[1]);
+        column1.setCellValueFactory( new PropertyValueFactory<>("nume"));
+        TableColumn<Client, String> column2 =
+                new TableColumn<>(colName[2]);
+        column2.setCellValueFactory( new PropertyValueFactory<>("adresa"));
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
 
+        column1.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
+        column2.prefWidthProperty().bind(tableView.widthProperty().multiply(0.5));
+
+        column1.setResizable(false);
+        column2.setResizable(false);
+        tableView.setPrefSize(300,0);
 
         VBox addClient=new VBox();
         itemi = FXCollections.observableArrayList();
@@ -165,7 +177,12 @@ public class ClientView  {
         butoane.getChildren().addAll(add, scoate, save, refr);
         butoane.setSpacing(10);
 
-        addClient.getChildren().addAll(src,lv, butoane);
+        VBox tabel=new VBox();
+        tabel.getChildren().addAll(tableView,lv);
+        tabel.setSpacing(-20);
+
+        addClient.getChildren().addAll(tabel, butoane);
+       // addClient.getChildren().addAll(tableView,table, butoane);
         addClient.setSpacing(15);
         addClient.setSpacing(20);
         addClient.setAlignment(Pos.CENTER);
@@ -191,7 +208,9 @@ public class ClientView  {
         tot.setBackground(new Background(myBI));
         tot.setSpacing(20);
 
-        //addListener
+        /**addListener
+         *
+         */
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -215,7 +234,9 @@ public class ClientView  {
         });
 
 
-        ///butoanele
+        /**butoanele
+         *
+         */
         add.setOnAction(new EventHandler() {
 
             @Override
@@ -262,7 +283,7 @@ public class ClientView  {
         });
 
 
-        Scene scene = new Scene(tot, 1000, 700);
+        Scene scene = new Scene(tot, 1070, 700);
         refresh();
         return scene;
 

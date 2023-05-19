@@ -1,5 +1,7 @@
 package Model;
-
+/**
+ * constructori, gettere, settere
+ * */
 public class Product {
     private int idproduct;
     private String nume;
@@ -19,7 +21,9 @@ public class Product {
         this.cantitate = cantitate;
         this.pret = pret;
     }
+    public Product() {
 
+    }
     public String getNume() {
         return nume;
     }
@@ -56,8 +60,8 @@ public class Product {
         return "Product  " +
                  idproduct +
                 ".  " + nume +
-                "                   " + cantitate +
-                " Stock                               " + pret +
+                "                       " + cantitate +
+                " Stock                                     " + pret +
                 " RON";
     }
 }

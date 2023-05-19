@@ -4,6 +4,7 @@ package DataAcces;
 
 import Model.Client;
 import Model.Orders;
+import Model.Product;
 import Presentation.OrderView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +22,7 @@ public class OrdersDAO extends AbstractDAO<Orders> {
      * @throws SQLException
      */
     public  String addOrders(Orders o)  {
-        return "("+o.getIdorder()+", "+"'"+o.getNumeProduct()+"'"+", "+"'"+o.getNumeClient()+"'"+", "+o.getCantitate()+")";
+        return "("+o.getIdorder()+", "+"'"+o.getNumeClient()+"'"+", '"+o.getNumeProduct()+"'"+", "+o.getCantitate()+")";
     }
     public Orders findById(int id) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/assig3db", "root", "12mii2020");
@@ -42,6 +43,26 @@ public class OrdersDAO extends AbstractDAO<Orders> {
         }
     }
 
+    public Product getProductOrder(String name)throws SQLException
+    {
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/assig3db", "root", "12mii2020");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM product WHERE nume = ?");
+        statement.setString(1, name);
+        ResultSet rs = statement.executeQuery();
+        if (rs.next()) {
+            int idp=rs.getInt("idproduct");
+            int cantitate=rs.getInt("cantitate");
+            Double pret=rs.getDouble("pret");
+            Product p=new Product(idp,name, cantitate,pret);
+            return p;
+        } else {
+            rs.close();
+            statement.close();
+            connection.close();
+            return null;
+        }
+    }
+
 
 
 
@@ -49,7 +70,7 @@ public class OrdersDAO extends AbstractDAO<Orders> {
         return String.valueOf(o.getIdorder());
     }
     public  String updateOrders(Orders o)  {
-        return "id = "+o.getIdorder()+", numeproduct = "+"'"+o.getNumeProduct()+", numeclient = "+"'"+o.getNumeClient()+"'"+"'"+", cantitate = "+"'"+o.getCantitate();
+        return "numeclient = "+"'"+o.getNumeClient()+"' ,"+"numeprodus = "+"'"+o.getNumeProduct()+"' , cantitate = "+o.getCantitate();
     }
     public ObservableList viewOrders() throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/assig3db", "root", "12mii2020");
@@ -63,8 +84,7 @@ public class OrdersDAO extends AbstractDAO<Orders> {
         while (rs.next()) {
             Orders cc= new Orders(rs.getInt("idorders"), rs.getString("numeprodus"), rs.getString("numeclient"),
                     rs.getInt("cantitate"));
-            System.out.println("intra");
-            comenzi.add(cc.toString());
+            comenzi.add(cc);
 
         }
 

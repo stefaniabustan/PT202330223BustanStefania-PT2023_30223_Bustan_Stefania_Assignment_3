@@ -38,9 +38,8 @@ public class ClientDAO extends AbstractDAO<Client>{
 
 
     /**
+     * pentru adaugare client (id, nume, adresa)
      *
-     * @param people
-     * @throws SQLException
      */
     public  String addClient(Client people)  {
         return "("+people.getId()+", "+"'"+people.getNume()+"'"+", "+"'"+people.getAdresa()+"'"+")";
@@ -48,6 +47,10 @@ public class ClientDAO extends AbstractDAO<Client>{
     public  String idClient(Client people)  {
         return String.valueOf(people.getId());
     }
+    /**
+     * pentru update client
+     *
+     */
     public  String updateClient(Client people)  {
         return "id = "+people.getId()+", nume = "+"'"+people.getNume()+"'"+", adresa = "+"'"+people.getAdresa()+"'";
     }

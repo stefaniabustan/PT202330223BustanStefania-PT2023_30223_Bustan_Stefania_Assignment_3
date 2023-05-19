@@ -35,6 +35,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * interfata principala
+ */
 public class StartScene {
     Connection connection = null;
 
@@ -85,6 +88,9 @@ public class StartScene {
                 BackgroundSize.DEFAULT);
         root.setBackground(new Background(myBI));
 
+        /**butoane
+         *
+         */
         client.setOnMouseClicked(new EventHandler() {
 
             @Override
@@ -118,9 +124,6 @@ public class StartScene {
         return scene;
 
     }
-
-    ///
-
 
 }
 

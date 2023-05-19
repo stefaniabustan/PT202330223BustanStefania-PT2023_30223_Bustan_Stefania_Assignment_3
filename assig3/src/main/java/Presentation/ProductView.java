@@ -1,6 +1,7 @@
 package Presentation;
 
 import Model.Client;
+import Model.Orders;
 import Model.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,6 +14,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -27,7 +29,9 @@ import javafx.scene.input.*;
 import java.io.FileOutputStream;
 import java.sql.*;
 import java.util.List;
-
+/**
+ * interfata pentru produs
+ */
 public class ProductView {
     private ProductController controller;
     private   ObservableList itemi;
@@ -128,23 +132,33 @@ public class ProductView {
         stanga.setSpacing(15);
         stanga.getChildren().addAll(id,name, adresa, cantitate);
 
-        //dreapta
-        TextField search = new TextField();
-        search.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 15));
-        search.setStyle("-fx-background-color: white; -fx-background-radius: 15px; ");
-        search.setBackground(
-                new Background(new BackgroundFill(Color.web("#2a2222", 1.0), CornerRadii.EMPTY, Insets.EMPTY)));
-        search.setPrefSize(500, 40);
-        Image srcc = new Image(
-                "https://www.clipartmax.com/png/full/473-4732129_computer-icons-google-search-clip-art-transprent-%E2%93%92-transparent-background-magnifying-glass.png",
-                20, 20, false, true);
-        ImageView im = new ImageView(srcc);
+        /**
+         * dreapta
+         */
+        Product pp=new Product();
+        ExtrageFields.retrieveProperties(pp);
+        String colName[]=ExtrageFields.extractFields.toArray(new String[0]);
+        ExtrageFields.extractFields.clear();
+        TableView tableView = new TableView();
+        TableColumn<Product, String> column1 =new TableColumn<>(colName[1]);
+        column1.setCellValueFactory( new PropertyValueFactory<>("nume"));
+        TableColumn<Product, String> column2 =new TableColumn<>(colName[2]);
+        column1.setCellValueFactory( new PropertyValueFactory<>("cantitate"));
+        TableColumn<Product, String> column3 =
+                new TableColumn<>(colName[3]);
+        column2.setCellValueFactory( new PropertyValueFactory<>("pret"));
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
+        tableView.getColumns().add(column3);
 
-        HBox src = new HBox();
-        src.setSpacing(-40);
-        src.setAlignment(Pos.CENTER_LEFT);
-        src.getChildren().addAll(search, im);
-        src.setPadding(new Insets(0, 0, -10, 0));
+        column1.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
+        column2.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
+        column3.prefWidthProperty().bind(tableView.widthProperty().multiply(0.4));
+
+        column1.setResizable(false);
+        column2.setResizable(false);
+        column3.setResizable(false);
+        tableView.setPrefSize(400,0);
 
 
         VBox addClient=new VBox();
@@ -178,7 +192,11 @@ public class ProductView {
         butoane.getChildren().addAll(add, scoate, save,refr);
         butoane.setSpacing(10);
 
-        addClient.getChildren().addAll(src,lv, butoane);
+        VBox tabel=new VBox();
+        tabel.getChildren().addAll(tableView,lv);
+        tabel.setSpacing(-20);
+
+        addClient.getChildren().addAll(tabel, butoane);
         addClient.setSpacing(15);
         addClient.setSpacing(20);
         addClient.setAlignment(Pos.CENTER);
@@ -204,7 +222,9 @@ public class ProductView {
         tot.setBackground(new Background(myBI));
         tot.setSpacing(20);
 
-        //addListener
+        /**addListener
+         *
+         */
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -229,7 +249,9 @@ public class ProductView {
         });
 
 
-        ///butoanele
+        /**butoanele
+         *
+         */
         add.setOnAction(new EventHandler() {
 
             @Override
